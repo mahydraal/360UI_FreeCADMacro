@@ -1,0 +1,53 @@
+FUSION-LIKE FREECAD PROFILE — CHANGELOG 1.3.0
+=============================================
+
+SKETCH CONTEXT
+--------------
+* Fixed the Part Design ribbon remaining visible while a Sketch is edited.
+* Added edit-object detection independent of the workbench name.
+* Added a 250 ms contextual refresh with delayed Sketcher-action detection.
+* Added dedicated Finish, Create, Project/Include, Modify, Constrain, and
+  Inspect Sketch toolbars.
+* Retained linked defining/reference face projection and sketch-plane
+  intersection commands in Sketch mode.
+* Automatically restores the correct workspace ribbon after leaving Sketch edit.
+
+DRAWING / TECHDRAW
+------------------
+* Added a prominent guided Insert Model View command.
+* Added a source/page dialog for Bodies, Parts, Links, root features, components,
+  and native Assemblies.
+* Routes insertion through FreeCAD's model-linked TechDraw view command and its
+  base/projected-view task.
+* Relabeled Active View as a raster Reference Capture and explicitly marks it
+  non-dimensionable.
+* Added Smart Dimension and guided dimension commands with selection validation.
+* Added a Drawing workflow help dialog explaining sheet, model view, projected
+  view, and edge/vertex dimension selection.
+
+ASSEMBLY
+--------
+* Added one-click Add Selected at the current placement.
+* Added component clipboard Copy, Paste with offset, Paste in place, and
+  Duplicate shortcuts and toolbar actions.
+* Uses App::Link component instances and Assembly::AssemblyLink when available.
+* Reports unsaved external documents, missing sources, dependency loops, and
+  AssemblyLink fallback behavior.
+* Added guided joint preflight for connector count, component identity,
+  subelement type, axial/directional/point compatibility, grounding, and likely
+  closed constraint loops.
+* Injects a live Mate Diagnostics panel into the native joint task.
+* Adds verbose messages when native connector selection is rejected.
+* Decodes native Assembly solver result codes after both manual Solve and mate
+  acceptance.
+* Selects the newly failed joint and presents targeted next actions for
+  ungrounded, conflicting, over-constrained, malformed, redundant, and general
+  solver failures.
+
+RETAINED
+--------
+* Native threaded Hole workflow.
+* Independent modeled/cosmetic Thread feature.
+* Persistent face/edge/sketch projection and SubShapeBinder workflow.
+* Fusion-like Part Design, Assembly, Drawing, timeline, navigation, command
+  palette, and reversible interface restoration.

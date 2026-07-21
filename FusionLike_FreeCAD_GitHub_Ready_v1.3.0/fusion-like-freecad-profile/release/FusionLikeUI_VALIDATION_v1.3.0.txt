@@ -1,0 +1,33 @@
+FUSION-LIKE FREECAD PROFILE — VALIDATION 1.3.0
+=====================================================
+
+[PASS] Install_FusionLike_FreeCAD_v1.3.0.FCMacro syntax: compiled successfully
+[PASS] FusionLikeUI_Profile_Source_v1.3.0.py syntax: compiled successfully
+[PASS] Uninstall_FusionLike_FreeCAD_v1.3.0.FCMacro syntax: compiled successfully
+[PASS] FusionLikeUI_SmokeTest_v1.3.0.FCMacro syntax: compiled successfully
+[PASS] FusionProfile methods unique: 130 methods
+[PASS] FusionProfile self calls resolve
+[PASS] contextual Sketch ribbon: _refresh_ui_context_if_needed
+[PASS] Sketch primitive compatibility fallback: def _add_first_command
+[PASS] dimensionable TechDraw workflow: def insert_dimensionable_model_view
+[PASS] Active View raster guard: DrawViewImage raster objects
+[PASS] Smart dimension validation: def start_drawing_dimension
+[PASS] Assembly component clipboard: ASSEMBLY_CLIPBOARD_MIME
+[PASS] Add Selected assembly instance: def add_selected_to_assembly
+[PASS] live native joint task patch: def _install_assembly_task_diagnostics_patch
+[PASS] post-mate solver status: def _post_joint_accept_diagnostics
+[PASS] decoded Assembly solver statuses: ASSEMBLY_SOLVER_CODES
+[PASS] installer version: '1.3.0'
+[PASS] embedded runtime exact: 236960 bytes
+[PASS] embedded README exact: 13666 bytes
+[PASS] Install_FusionLike_FreeCAD_v1.3.0.FCMacro present: 261688 bytes
+[PASS] FusionLikeUI_Profile_Source_v1.3.0.py present: 236960 bytes
+[PASS] Uninstall_FusionLike_FreeCAD_v1.3.0.FCMacro present: 4931 bytes
+[PASS] FusionLikeUI_README_v1.3.0.txt present: 13666 bytes
+[PASS] FusionLikeUI_CHANGELOG_v1.3.0.txt present: 2501 bytes
+[PASS] FusionLikeUI_SmokeTest_v1.3.0.FCMacro present: 2856 bytes
+[PASS] ZIP CRC and extraction: 7 files verified
+
+LIMITATION
+----------
+The package was statically validated in this environment, but the final GUI integration was not executed inside a live FreeCAD process. Build-specific Qt, TechDraw, Assembly, or Open CASCADE behavior may still require a targeted patch based on Report-view output.

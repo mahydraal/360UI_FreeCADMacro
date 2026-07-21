@@ -1,0 +1,148 @@
+# -*- coding: utf-8 -*-
+"""Restore the saved FreeCAD UI state and remove Fusion-like profile version 1.3."""
+
+import base64
+import os
+import shutil
+import sys
+import traceback
+
+import FreeCAD as App
+import FreeCADGui as Gui
+from PySide import QtCore, QtGui
+
+try:
+    from PySide import QtWidgets
+except ImportError:
+    QtWidgets = QtGui
+
+PREF_PATH = "User parameter:BaseApp/Preferences/FusionLike"
+VIEW_PREF_PATH = "User parameter:BaseApp/Preferences/View"
+SKETCHER_PREF_PATH = "User parameter:BaseApp/Preferences/Mod/Sketcher/General"
+ADDON_DIR = os.path.join(App.getUserAppDataDir(), "Mod", "FusionLikeUI")
+RUNTIME_NAME = "fusion_like_ui_runtime"
+STATE_VERSION = 1
+
+
+def _remove_visible_profile_widgets():
+    mw = Gui.getMainWindow()
+    for toolbar in list(mw.findChildren(QtWidgets.QToolBar)):
+        if str(toolbar.objectName()).startswith("FusionLike_"):
+            mw.removeToolBar(toolbar)
+            toolbar.deleteLater()
+
+    dock = mw.findChild(QtWidgets.QDockWidget, "FusionLike_Timeline")
+    if dock is not None:
+        mw.removeDockWidget(dock)
+        dock.deleteLater()
+
+    menu = mw.menuBar().findChild(QtWidgets.QMenu, "FusionLike_Menu")
+    if menu is not None:
+        mw.menuBar().removeAction(menu.menuAction())
+        menu.deleteLater()
+
+
+def _fallback_restore():
+    pref = App.ParamGet(PREF_PATH)
+    view = App.ParamGet(VIEW_PREF_PATH)
+    sketcher = App.ParamGet(SKETCHER_PREF_PATH)
+    mw = Gui.getMainWindow()
+
+    _remove_visible_profile_widgets()
+    pref.SetBool("Enabled", False)
+    if pref.GetBool("OriginalSketcherProjectionStateCaptured", False):
+        sketcher.SetBool(
+            "AlwaysExtGeoReference",
+            pref.GetBool("OriginalAlwaysExtGeoReference", False),
+        )
+    if not pref.GetBool("OriginalStateCaptured", False):
+        return
+
+    view.SetBool(
+        "SameStyleForAllViews", pref.GetBool("OriginalSameStyleForAllViews", True)
+    )
+    view.SetString(
+        "NavigationStyle",
+        pref.GetString("OriginalNavigationStyle", "Gui::CADNavigationStyle"),
+    )
+    view.SetInt("OrbitStyle", pref.GetInt("OriginalOrbitStyle", 4))
+    view.SetBool("ShowNaviCube", pref.GetBool("OriginalShowNaviCube", True))
+    workbench = pref.GetString("OriginalWorkbench", "")
+    try:
+        if workbench and workbench in Gui.listWorkbenches():
+            Gui.activateWorkbench(workbench)
+    except Exception:
+        pass
+
+    encoded = pref.GetString("OriginalMainWindowState", "")
+    if encoded:
+        try:
+            state = QtCore.QByteArray.fromBase64(encoded.encode("ascii"))
+            mw.restoreState(state, STATE_VERSION)
+        except Exception:
+            # Compatibility fallback for unusual PySide QByteArray conversions.
+            try:
+                state = QtCore.QByteArray(base64.b64decode(encoded.encode("ascii")))
+                mw.restoreState(state, STATE_VERSION)
+            except Exception:
+                App.Console.PrintWarning(
+                    "[Fusion-like UI] Could not restore the saved Qt layout state.\n"
+                )
+
+
+def uninstall():
+    restored = False
+    if ADDON_DIR not in sys.path:
+        sys.path.insert(0, ADDON_DIR)
+
+    try:
+        runtime = sys.modules.get(RUNTIME_NAME)
+        if runtime is None and os.path.exists(os.path.join(ADDON_DIR, RUNTIME_NAME + ".py")):
+            runtime = __import__(RUNTIME_NAME)
+        if runtime is not None and hasattr(runtime, "restore"):
+            runtime.restore()
+            restored = True
+    except Exception:
+        App.Console.PrintWarning(
+            "[Fusion-like UI] Runtime restore failed; using fallback:\n{}\n".format(
+                traceback.format_exc()
+            )
+        )
+
+    if not restored:
+        _fallback_restore()
+    _remove_visible_profile_widgets()
+    App.ParamGet(PREF_PATH).SetBool("Enabled", False)
+
+    sys.modules.pop(RUNTIME_NAME, None)
+    try:
+        while ADDON_DIR in sys.path:
+            sys.path.remove(ADDON_DIR)
+    except Exception:
+        pass
+
+    if os.path.isdir(ADDON_DIR):
+        shutil.rmtree(ADDON_DIR)
+
+    QtWidgets.QMessageBox.information(
+        Gui.getMainWindow(),
+        "Fusion-like UI removed",
+        "The installed profile was removed and the saved FreeCAD interface was "
+        "restored as far as the current build permits. Restart FreeCAD once to "
+        "finish unloading the startup module. Existing custom Thread features keep "
+        "their last-computed shape, but reinstall this profile before editing or "
+        "recomputing those features.",
+    )
+
+
+try:
+    uninstall()
+except Exception:
+    details = traceback.format_exc()
+    App.Console.PrintError("[Fusion-like UI] Uninstall failed:\n{}\n".format(details))
+    QtWidgets.QMessageBox.critical(
+        Gui.getMainWindow(),
+        "Fusion-like UI uninstall failed",
+        "The uninstall did not finish. Details were written to FreeCAD's Report "
+        "view.\n\n{}".format(details),
+    )

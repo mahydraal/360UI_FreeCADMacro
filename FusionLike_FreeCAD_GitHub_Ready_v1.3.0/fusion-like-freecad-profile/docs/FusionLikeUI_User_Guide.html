@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Fusion-like FreeCAD Workflow Profile v1.3.0</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="guide-print.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Fusion-like FreeCAD Workflow Profile v1.3.0</h1>
+<p class="subtitle">Graphical user, installation, and public-testing
+guide</p>
+<p class="date">Version 1.3.0</p>
+</header>
+<p><img src="assets/banner.png" alt="Project banner" /></p>
+<blockquote>
+<p>Independent public-test project for FreeCAD 1.1+. No Autodesk assets.
+Not affiliated with Autodesk or the FreeCAD project.</p>
+</blockquote>
+
+<div class="pagebreak"></div>
+
+<h1 id="installation-and-setup-guide">Installation and setup guide</h1>
+<p align="center"><img src="assets/installation-flow.svg" alt="Installation flow" width="100%"></p>
+
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li>FreeCAD <strong>1.1 or newer</strong> with the standard Part Design,
+Sketcher, TechDraw, and Assembly modules available.</li>
+<li>Permission to write to your FreeCAD user-data directory.</li>
+<li>A backup of important <code>.FCStd</code> documents before
+public-testing a new build.</li>
+</ul>
+<p>The installer checks the FreeCAD version before writing the add-on.
+Use FreeCAD’s own <strong>Macro → Macros…</strong> dialog to locate the
+macro directory; this is more reliable than hard-coded operating-system
+paths.</p>
+<h2 id="recommended-installation">Recommended installation</h2>
+<ol type="1">
+<li>Close active Sketch, Hole, Thread, Drawing, or Assembly task
+dialogs.</li>
+<li>Download
+<code>macros/Install_FusionLike_FreeCAD_v1.3.0.FCMacro</code>.</li>
+<li>Open FreeCAD.</li>
+<li>Choose <strong>Macro → Macros…</strong>.</li>
+<li>Read the <strong>User macros location</strong> shown in the
+dialog.</li>
+<li>Copy the installer macro into that directory.</li>
+<li>Return to the Macro dialog, select the installer, and click
+<strong>Execute</strong>.</li>
+<li>Confirm the installation message.</li>
+<li>Verify that a <strong>Fusion-like</strong> menu appears and that the
+top workspace selector contains <strong>DESIGN</strong>,
+<strong>ASSEMBLE</strong>, and <strong>DRAWING</strong> when those
+native workbenches are present.</li>
+</ol>
+<p>Restarting is normally unnecessary. Restart once when upgrading from
+a runtime that has been loaded for a long session, or when an old native
+task dialog remains open after installation.</p>
+<h2 id="what-the-installer-writes">What the installer writes</h2>
+<p>The installer creates this user module:</p>
+<pre class="text"><code>&lt;FreeCAD user data&gt;/Mod/FusionLikeUI/
+├── Init.py
+├── InitGui.py
+├── fusion_like_ui_runtime.py
+└── README.txt</code></pre>
+<p><code>InitGui.py</code> waits for the FreeCAD main window, imports
+the runtime, and retries startup if the GUI is not ready yet.</p>
+<p>The installer also stores profile state under:</p>
+<pre class="text"><code>User parameter:BaseApp/Preferences/FusionLike</code></pre>
+<p>That state includes whether the profile is enabled, the installed
+version, the original workbench/layout state, and selected workflow
+preferences.</p>
+<h2 id="upgrade-from-v10-v12">Upgrade from v1.0-v1.2</h2>
+<p>Run the v1.3 installer directly over the earlier version.</p>
+<ul>
+<li>Do <strong>not</strong> run the uninstaller first.</li>
+<li>The original interface backup captured during the first installation
+is preserved.</li>
+<li>The loaded older runtime is asked to restore and remove its event
+hooks before replacement.</li>
+<li>Existing modeled documents are not rewritten by the installer.</li>
+</ul>
+<h2 id="verify-the-installation">Verify the installation</h2>
+<p>Run <code>macros/FusionLikeUI_SmokeTest_v1.3.0.FCMacro</code> through
+<strong>Macro → Macros…</strong>.</p>
+<p>The smoke test checks:</p>
+<ul>
+<li>installed version and runtime path</li>
+<li>required public runtime functions</li>
+<li>availability of key FreeCAD commands currently registered</li>
+<li>profile preference state</li>
+</ul>
+<p>Workbench-specific commands can appear unavailable until the
+corresponding native workbench has been activated once. Activate Part
+Design, Sketcher, Assembly, and TechDraw, then rerun the smoke test if
+needed.</p>
+<h2 id="manual-source-tree-installation">Manual source-tree
+installation</h2>
+<p>This method is intended for developers.</p>
+<ol type="1">
+<li>Create
+<code>&lt;FreeCAD user data&gt;/Mod/FusionLikeUI/</code>.</li>
+<li>Copy <code>packaging/Init.py</code> and
+<code>packaging/InitGui.py</code> into it.</li>
+<li>Copy <code>src/fusion_like_ui_runtime.py</code> into it with that
+exact filename.</li>
+<li>Copy <code>packaging/installed_README.txt</code> as
+<code>README.txt</code>.</li>
+<li>Restart FreeCAD.</li>
+</ol>
+<p>The release installer is preferred for testers because it also
+handles original-state capture, loaded-runtime replacement, version
+checking, and immediate activation.</p>
+<h2 id="first-run-setup">First-run setup</h2>
+<ol type="1">
+<li>Start in <strong>DESIGN</strong> and confirm middle-mouse pan,
+Shift+middle-mouse orbit, and mouse-wheel zoom.</li>
+<li>Create or edit a Sketch and confirm that the ribbon changes to
+Sketch tools.</li>
+<li>Open <strong>DRAWING</strong> once so TechDraw registers its
+actions.</li>
+<li>Open <strong>ASSEMBLE</strong> once so the Assembly actions and
+diagnostic wrappers are registered.</li>
+<li>Run the smoke test.</li>
+</ol>
+<h2 id="restore-without-uninstalling">Restore without uninstalling</h2>
+<p>Choose:</p>
+<pre class="text"><code>Fusion-like → Restore original FreeCAD interface</code></pre>
+<p>This disables the profile, removes its runtime widgets and event
+filters, restores saved navigation preferences, reactivates the original
+workbench when available, and restores the saved Qt window state.</p>
+<p>To re-enable it later, choose:</p>
+<pre class="text"><code>Fusion-like → Apply / rebuild Fusion-like profile</code></pre>
+<h2 id="uninstall">Uninstall</h2>
+<ol type="1">
+<li>Close active task dialogs.</li>
+<li>Run
+<code>macros/Uninstall_FusionLike_FreeCAD_v1.3.0.FCMacro</code>.</li>
+<li>Restart FreeCAD once.</li>
+</ol>
+<p>The uninstaller attempts to restore the original interface before
+removing the user module.</p>
+<h2 id="installation-troubleshooting">Installation troubleshooting</h2>
+<h3 id="installer-reports-that-freecad-is-too-old">Installer reports
+that FreeCAD is too old</h3>
+<p>Install FreeCAD 1.1 or newer. The runtime depends on APIs and
+commands not consistently available in earlier releases.</p>
+<h3 id="nothing-appears-after-installation">Nothing appears after
+installation</h3>
+<p>Open <strong>View → Panels → Report view</strong> and look for
+messages prefixed <code>[Fusion-like UI]</code>. Restart FreeCAD once,
+then rerun the smoke test.</p>
+<h3 id="some-toolbar-buttons-are-missing">Some toolbar buttons are
+missing</h3>
+<p>Activate the corresponding native workbench once. FreeCAD registers
+some actions lazily.</p>
+<h3 id="the-interface-is-duplicated">The interface is duplicated</h3>
+<p>Choose <strong>Fusion-like → Apply / rebuild Fusion-like
+profile</strong>. The rebuild removes existing profile toolbars before
+recreating them.</p>
+<h3 id="the-original-layout-is-not-restored-exactly">The original layout
+is not restored exactly</h3>
+<p>Qt layout state can differ when dock widgets or workbenches have
+changed between FreeCAD builds. Use FreeCAD’s native <strong>View →
+Panels</strong> and <strong>View → Toolbars</strong> menus to make final
+adjustments, then report the build and steps used.</p>
+<div class="pagebreak"></div>
+
+<h1 id="ten-minute-quick-start">Ten-minute quick start</h1>
+<p>This walkthrough confirms the major workflows without requiring a
+production model.</p>
+<h2 id="1-confirm-the-interface">1. Confirm the interface</h2>
+<p>Choose <strong>DESIGN</strong> in the workspace selector. You should
+see Create, Modify, and Construct/Inspect groups, a model browser on the
+left, a task/property area, and the feature timeline along the
+bottom.</p>
+<p align="center"><img src="assets/interface-map.svg" alt="Interface map" width="100%"></p>
+
+<h2 id="2-create-a-sketch-and-solid">2. Create a sketch and solid</h2>
+<ol type="1">
+<li>Create a new document.</li>
+<li>Create a Part Design Body.</li>
+<li>Start a Sketch on the XY plane.</li>
+<li>Confirm that the ribbon changes to Sketch primitives and
+constraints.</li>
+<li>Draw a rectangle with <strong>R</strong>.</li>
+<li>Leave the Sketch.</li>
+<li>Press <strong>E</strong> and choose <strong>Add / Pad</strong>.</li>
+</ol>
+<h2 id="3-project-a-face-and-cut-it">3. Project a face and cut it</h2>
+<ol type="1">
+<li>Select a face of the Pad and create another Sketch on it.</li>
+<li>Press <strong>P</strong>.</li>
+<li>Click an outer edge or a suitable face boundary.</li>
+<li>Press <strong>Esc</strong> to end projection picking.</li>
+<li>Add any additional sketch geometry required for a closed
+profile.</li>
+<li>Press <strong>E</strong> and choose <strong>Cut /
+Pocket</strong>.</li>
+</ol>
+<p align="center"><img src="assets/sketch-projection-workflow.svg" alt="Sketch projection workflow" width="100%"></p>
+
+<h2 id="4-try-a-threaded-hole">4. Try a threaded hole</h2>
+<ol type="1">
+<li>Create a Sketch containing a point or circle where the hole should
+be placed.</li>
+<li>Select the Sketch.</li>
+<li>Press <strong>H</strong>.</li>
+<li>Choose <strong>Hole &amp; Thread</strong>.</li>
+<li>Select a standard and size.</li>
+<li>Use cosmetic representation for a fast test, or modeled
+representation for physical helical geometry.</li>
+</ol>
+<h2 id="5-create-a-dimensionable-drawing">5. Create a dimensionable
+drawing</h2>
+<ol type="1">
+<li>Choose <strong>DRAWING</strong>.</li>
+<li>Click <strong>Insert Model View</strong>.</li>
+<li>Select the Body as the source and create a new default sheet.</li>
+<li>Complete the base/projected-view task.</li>
+<li>On the drawing page, select an actual projected edge or vertex.</li>
+<li>Use <strong>Smart Dimension</strong>.</li>
+</ol>
+<p>Do not use <strong>Active View Snapshot</strong> for this test; it
+creates a raster image.</p>
+<p align="center"><img src="assets/drawing-workflow.svg" alt="Drawing workflow" width="100%"></p>
+
+<h2 id="6-create-a-small-assembly">6. Create a small assembly</h2>
+<ol type="1">
+<li>Save the document or open two saved component documents.</li>
+<li>Choose <strong>ASSEMBLE</strong>.</li>
+<li>Create or activate an Assembly.</li>
+<li>Select a source Part or Body and click <strong>Add Selected</strong>
+twice, or duplicate an inserted component with
+<strong>Ctrl+D</strong>.</li>
+<li>Ground one component.</li>
+<li>Select compatible connector geometry on two different
+instances.</li>
+<li>Create a native joint.</li>
+<li>Run <strong>Solve and show diagnostics</strong>.</li>
+</ol>
+<p align="center"><img src="assets/assembly-workflow.svg" alt="Assembly workflow" width="100%"></p>
+
+<h2 id="7-verify-recovery">7. Verify recovery</h2>
+<p>Choose <strong>Fusion-like → Restore original FreeCAD
+interface</strong>, then reapply the profile. This confirms that the
+reversible state path works before you begin public testing.</p>
+<div class="pagebreak"></div>
+
+<h1 id="graphical-user-guide">Graphical user guide</h1>
+<p>This guide describes the tester-facing behavior of version 1.3.0. The
+illustrations are conceptual diagrams, not screenshots from a specific
+FreeCAD theme or operating system.</p>
+<h2 id="interface-orientation">Interface orientation</h2>
+<p align="center"><img src="assets/interface-map.svg" alt="Conceptual interface map" width="100%"></p>
+
+<p>The top workspace selector determines the main ribbon:</p>
+<ul>
+<li><strong>DESIGN</strong>: solid Part Design, Sketch entry,
+projection, Hole, Thread, and inspection.</li>
+<li><strong>ASSEMBLE</strong>: component insertion, copy/paste,
+grounding, native joints, motion, BOM, and diagnostics.</li>
+<li><strong>DRAWING</strong>: TechDraw sheets, model views,
+projected/section/detail views, dimensions, annotations, symbols, BOM,
+and export.</li>
+</ul>
+<p>Sketch edit mode overrides the workspace ribbon temporarily. Leaving
+the Sketch restores the previously active workspace ribbon.</p>
+<h2 id="design-workspace">Design workspace</h2>
+<h3 id="create">Create</h3>
+<ul>
+<li>Body and Sketch creation</li>
+<li>Pad/Pocket under <strong>Extrude</strong></li>
+<li>Hole and threaded-hole workflow</li>
+<li>Revolution/Groove</li>
+<li>additive/subtractive Loft and Sweep/Pipe</li>
+<li>independent Thread</li>
+</ul>
+<h3 id="modify">Modify</h3>
+<ul>
+<li>Fillet, chamfer, draft, and thickness</li>
+<li>Press/Pull approximation using native Pad, Pocket, Thickness, Draft,
+and Transform commands</li>
+<li>mirror and pattern</li>
+</ul>
+<h3 id="construct--inspect">Construct / Inspect</h3>
+<ul>
+<li>datum plane, line, point, and coordinate system</li>
+<li>measure, mass properties, geometry check</li>
+<li>fit, isometric, and visibility controls</li>
+</ul>
+<h2 id="sketch-and-project--include">Sketch and Project / Include</h2>
+<p align="center"><img src="assets/sketch-projection-workflow.svg" alt="Sketch projection and extrusion workflow" width="100%"></p>
+
+<h3 id="contextual-sketch-ribbon">Contextual Sketch ribbon</h3>
+<p>When a <code>Sketcher::SketchObject</code> enters edit mode, the
+profile presents:</p>
+<ul>
+<li><strong>Finish</strong>: Leave Sketch, Cancel Sketch, View Sketch,
+Section View, Stop operation</li>
+<li><strong>Create</strong>: point, line/polyline, rectangle, arc,
+circle/conic, slot, text, construction geometry</li>
+<li><strong>Project / Include</strong>: defining projection, reference
+projection, intersection, Carbon Copy</li>
+<li><strong>Modify</strong>: trim, split, extend, fillet/chamfer,
+offset, move, rotate, scale, symmetry, clipboard tools</li>
+<li><strong>Constrain</strong>: dimension and geometric constraints</li>
+<li><strong>Inspect</strong>: validation and conflict/redundancy
+selectors</li>
+</ul>
+<h3 id="linked-defining-projection--p">Linked defining projection —
+<code>P</code></h3>
+<p>Use when the projected result should participate in a closed Pad or
+Pocket profile.</p>
+<ol type="1">
+<li>Edit the destination Sketch.</li>
+<li>Press <strong>P</strong>.</li>
+<li>Select faces, edges, vertices, or an earlier Sketch.</li>
+<li>Press <strong>Esc</strong> when finished.</li>
+<li>Complete the profile and use <strong>E</strong> for Pad/Pocket.</li>
+</ol>
+<h3 id="linked-constructionreference-projection--shiftp">Linked
+construction/reference projection — <code>Shift+P</code></h3>
+<p>Use for persistent design references that should not form the solid
+profile by themselves.</p>
+<h3 id="sketch-plane-intersection">Sketch-plane intersection</h3>
+<p>Creates linked defining curves where the selected geometry intersects
+the active sketch plane.</p>
+<h3 id="direct-link-vs-subshapebinder">Direct link vs.
+SubShapeBinder</h3>
+<p>The runtime links geometry directly when FreeCAD permits the
+dependency. Imported geometry, cross-Body geometry, and some cross-Part
+references are routed through a synchronized
+<code>PartDesign::SubShapeBinder</code> inserted before the destination
+Sketch.</p>
+<p>The operation is rejected when it would create a circular dependency,
+reference a later feature in the same Body, or link directly to another
+FreeCAD document.</p>
+<h2 id="hole-and-thread">Hole and Thread</h2>
+<h3 id="native-hole--thread--h">Native Hole &amp; Thread —
+<code>H</code></h3>
+<p>The dialog is a Fusion-style front end over a native
+<code>PartDesign::Hole</code>. It supports installed FreeCAD standards,
+sizes, classes, depth behavior, direction, modeled/cosmetic thread,
+counterbore/countersink/counterdrill, drill point, taper, and
+clearance.</p>
+<p>Recommended workflow:</p>
+<ol type="1">
+<li>Select a Sketch containing points, circles, or arcs, or select an
+existing Hole.</li>
+<li>Press <strong>H</strong>.</li>
+<li>Choose <strong>Hole &amp; Thread</strong>.</li>
+<li>Set hole type, standard, size, class, direction, depth, and
+representation.</li>
+<li>Accept and recompute.</li>
+</ol>
+<h3 id="independent-cylindrical-thread--shiftt">Independent cylindrical
+Thread — <code>Shift+T</code></h3>
+<p>Use on one or more cylindrical faces of the current Body Tip. The
+result is a persistent <code>PartDesign::FeaturePython</code> that can
+model a helical cut or store cosmetic callout metadata.</p>
+<ul>
+<li>Select cylindrical faces from the same source feature.</li>
+<li>Press <strong>Shift+T</strong>.</li>
+<li>Choose internal/external/automatic recognition, standard, size,
+class, direction, extent, offset, and clearance.</li>
+<li>Select the Thread feature and press <strong>Shift+T</strong> again
+to edit it.</li>
+</ul>
+<p>Modeled threads increase recompute and file complexity. Cosmetic
+threads are normally better for large fastener populations.</p>
+<h2 id="drawing-workspace">Drawing workspace</h2>
+<p align="center"><img src="assets/drawing-workflow.svg" alt="Dimensionable drawing workflow" width="100%"></p>
+
+<h3 id="insert-model-view">Insert Model View</h3>
+<p>This is the normal engineering-drawing path.</p>
+<ol type="1">
+<li>Create or select a TechDraw sheet.</li>
+<li>Click <strong>Insert Model View</strong>.</li>
+<li>Choose one or more source Bodies, Parts, Links, components, or a
+native Assembly.</li>
+<li>Select an existing sheet or create the default sheet.</li>
+<li>Complete the native base/projected-view task.</li>
+<li>Select actual drawing edges or vertices on the page.</li>
+<li>Use Smart Dimension or a specific dimension command.</li>
+</ol>
+<h3 id="active-view-snapshot">Active View Snapshot</h3>
+<p>This inserts a raster image of the open 3D viewport. It is useful for
+shaded reference illustrations but does not contain associative model
+edges or vertices and is not normally dimensionable.</p>
+<h3 id="dimension-selection">Dimension selection</h3>
+<p>The profile warns when:</p>
+<ul>
+<li>nothing is selected</li>
+<li>only a Page or model-tree view item is selected</li>
+<li>the selection is a raster Active View</li>
+<li>no drawing Edge, Vertex, or Face subelement is selected</li>
+</ul>
+<h3 id="other-drawing-functions">Other drawing functions</h3>
+<ul>
+<li>projected, section, detail, broken, and clipped views</li>
+<li>hatching and view stacking</li>
+<li>linear, radial, diameter, angular, area, chain, coordinate, and arc
+dimensions</li>
+<li>centerlines, center marks, thread graphics, leaders, balloons, weld
+and surface-finish symbols</li>
+<li>thread callouts linked to native Hole or independent Thread
+features</li>
+<li>Assembly BOM creation and Spreadsheet/BOM placement</li>
+<li>PDF, SVG, and DXF export</li>
+</ul>
+<h2 id="assembly-workspace">Assembly workspace</h2>
+<p align="center"><img src="assets/assembly-workflow.svg" alt="Assembly workflow" width="100%"></p>
+
+<h3 id="add-and-duplicate-components">Add and duplicate components</h3>
+<ul>
+<li><strong>Add Selected</strong>: insert selected model objects at
+their current placement</li>
+<li><strong>Ctrl+C</strong>: copy selected component sources</li>
+<li><strong>Ctrl+V</strong>: paste new instances with an X offset</li>
+<li><strong>Ctrl+Shift+V</strong>: paste in place</li>
+<li><strong>Ctrl+D</strong>: duplicate selected components with an
+offset</li>
+</ul>
+<p>Instances are normally native <code>App::Link</code> objects. Native
+subassemblies use <code>Assembly::AssemblyLink</code> when the build
+exposes it.</p>
+<p>Save both documents before linking components across files. The
+profile rejects dependency loops and reports skipped sources.</p>
+<h3 id="grounding">Grounding</h3>
+<p>Ground at least one component or establish a grounded path. A fully
+floating assembly has no reference frame and returns the native solver
+status for “no grounded component.”</p>
+<h3 id="connector-selection">Connector selection</h3>
+<p>Choose geometry on two different component instances:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Joint type</th>
+<th>Good connector choices</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Fixed</td>
+<td>faces, edges, vertices, datums, axes, coordinate systems</td>
+</tr>
+<tr class="even">
+<td>Revolute / cylindrical</td>
+<td>cylindrical faces, circular edges, explicit axes</td>
+</tr>
+<tr class="odd">
+<td>Slider</td>
+<td>axes, straight edges, planar references, coordinate systems</td>
+</tr>
+<tr class="even">
+<td>Ball</td>
+<td>vertices, centers, point-like references</td>
+</tr>
+<tr class="odd">
+<td>Parallel / perpendicular / angle</td>
+<td>planar faces, straight edges, axes, datum planes</td>
+</tr>
+<tr class="even">
+<td>Distance</td>
+<td>point, edge, face, axis, or datum references appropriate to the
+relation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="diagnostic-stages">Diagnostic stages</h3>
+<ol type="1">
+<li><strong>Preflight</strong> checks connector count, component
+identity, subelement type, obvious geometry mismatch, grounding, and
+likely closed loops.</li>
+<li><strong>Live task panel</strong> updates while the native joint task
+is open.</li>
+<li><strong>Post-solve report</strong> decodes the native solver result
+and selects a newly failed joint when possible.</li>
+</ol>
+<p>Native solver results decoded by the profile:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td>solved</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-6</td>
+<td>no grounded component</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-4</td>
+<td>over-constrained</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-3</td>
+<td>conflicting joints</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-5</td>
+<td>malformed/broken joint</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-1</td>
+<td>general solver error</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-2</td>
+<td>redundant joints</td>
+</tr>
+</tbody>
+</table>
+<h2 id="timeline-and-command-search">Timeline and command search</h2>
+<h3 id="parametric-timeline">Parametric timeline</h3>
+<p>The bottom timeline visualizes compatible document objects in
+document order. Right-click a compatible Part Design feature to set the
+Body Tip there or restore the latest solid feature. This is a Body-Tip
+workflow aid, not Fusion’s native timeline engine.</p>
+<h3 id="command-search--s">Command search — <code>S</code></h3>
+<p>Searches registered FreeCAD <code>QAction</code> commands and
+triggers the selected action. Disabled commands are shown but cannot be
+run.</p>
+<h2 id="keyboard-map">Keyboard map</h2>
+<p align="center"><img src="assets/keyboard-map.svg" alt="Keyboard shortcut map" width="100%"></p>
+
+<p>Shortcuts are ignored while focus is in a text field, spin box, combo
+box, modal dialog, or unrelated window.</p>
+<h2 id="restore-and-recovery">Restore and recovery</h2>
+<p>Use <strong>Fusion-like → Restore original FreeCAD interface</strong>
+to remove profile widgets and restore saved layout/navigation state. Use
+<strong>Apply / rebuild</strong> to re-enable it.</p>
+<p>For errors, open <strong>View → Panels → Report view</strong> and
+capture all relevant lines prefixed <code>[Fusion-like UI]</code>.</p>
+<div class="pagebreak"></div>
+
+<h1 id="troubleshooting">Troubleshooting</h1>
+<h2 id="first-diagnostic-steps">First diagnostic steps</h2>
+<ol type="1">
+<li>Open <strong>View → Panels → Report view</strong>.</li>
+<li>Reproduce the problem once.</li>
+<li>Copy all lines prefixed <code>[Fusion-like UI]</code> plus any
+adjacent Python traceback.</li>
+<li>Run the v1.3 smoke-test macro.</li>
+<li>Record the FreeCAD version from <strong>Help → About FreeCAD → Copy
+to clipboard</strong>.</li>
+</ol>
+<h2 id="sketch-ribbon-does-not-appear">Sketch ribbon does not
+appear</h2>
+<ul>
+<li>Confirm that a <code>Sketcher::SketchObject</code> is actually in
+edit mode.</li>
+<li>Wait a fraction of a second for late Sketcher command
+registration.</li>
+<li>Choose <strong>Fusion-like → Apply / rebuild Fusion-like
+profile</strong>.</li>
+<li>Activate the Sketcher workbench once, then return to Part Design and
+edit the Sketch again.</li>
+<li>Check Report view for <code>_refresh_ui_context_if_needed</code>
+errors.</li>
+</ul>
+<h2 id="sketch-primitive-button-is-missing">Sketch primitive button is
+missing</h2>
+<p>The runtime uses grouped-command IDs first and individual-command
+fallbacks. A missing button can indicate that the corresponding native
+command is not registered in that build. Search for the primitive with
+<strong>S</strong> and include its action object name in the issue
+report.</p>
+<h2 id="projection-fails">Projection fails</h2>
+<p>Common causes:</p>
+<ul>
+<li>destination Sketch is not in edit mode</li>
+<li>source is the destination Sketch itself</li>
+<li>source feature occurs later in the same Body</li>
+<li>source already depends on the destination Sketch</li>
+<li>cross-document direct links are attempted</li>
+<li>the selected subelement was deleted or renamed by a topology
+change</li>
+</ul>
+<p>For cross-document workflows, import or link the source into the
+destination document first.</p>
+<h2 id="pad-or-pocket-cannot-use-a-projected-profile">Pad or Pocket
+cannot use a projected profile</h2>
+<ul>
+<li>Confirm that <strong>P</strong>, not Shift+P, created defining
+geometry.</li>
+<li>Check that the resulting loops are closed and
+non-self-intersecting.</li>
+<li>Confirm the Sketch belongs to the active Body.</li>
+<li>Use Sketch validation and inspect redundant/conflicting
+constraints.</li>
+</ul>
+<h2 id="modeled-thread-is-slow-or-fails">Modeled thread is slow or
+fails</h2>
+<ul>
+<li>Try cosmetic mode to verify the standard/size metadata first.</li>
+<li>Reduce thread length.</li>
+<li>Remove extreme custom clearance.</li>
+<li>Confirm the selected face is cylindrical and belongs to the current
+Body Tip source.</li>
+<li>Check for self-intersecting helical profiles or a boolean failure in
+Report view.</li>
+</ul>
+<h2 id="drawing-view-cannot-be-dimensioned">Drawing view cannot be
+dimensioned</h2>
+<ul>
+<li>Confirm it is a model-linked TechDraw view, not
+<code>ActiveView</code> / <code>DrawViewImage</code>.</li>
+<li>Select the actual projected edge or vertex on the drawing page.</li>
+<li>Wait for HLR recomputation to finish.</li>
+<li>Confirm the source object has a valid shape.</li>
+<li>Try a specific dimension command after Smart Dimension explains the
+selection.</li>
+</ul>
+<h2 id="assembly-component-cannot-be-added">Assembly component cannot be
+added</h2>
+<ul>
+<li>Activate or create an Assembly.</li>
+<li>Save both source and Assembly documents for cross-document
+links.</li>
+<li>Confirm the source object has a shape or is a supported
+Part/Body/Link.</li>
+<li>Avoid linking a document back into itself through a dependency
+cycle.</li>
+</ul>
+<h2 id="two-parts-look-compatible-but-will-not-mate">Two parts look
+compatible but will not mate</h2>
+<p>Check in this order:</p>
+<ol type="1">
+<li>The references belong to two different <strong>component
+instances</strong>, not two faces of the same source object.</li>
+<li>One component is grounded or connected to ground.</li>
+<li>Connector geometry matches the joint type: axial references for
+revolute/cylindrical; point-like references for ball.</li>
+<li>An earlier joint has not already removed the same degrees of
+freedom.</li>
+<li>Offsets and reverse direction are not forcing an impossible
+placement.</li>
+<li>Linked face/edge names are still valid after source-model
+edits.</li>
+</ol>
+<p>Run <strong>Why won’t this mate?</strong> before creation and
+<strong>Solve and show diagnostics</strong> afterward.</p>
+<h2 id="solver-status-guide">Solver status guide</h2>
+<ul>
+<li><code>-6</code>: ground a component</li>
+<li><code>-4</code>: suppress the newest joint or replace multiple
+constraints with a single intended joint</li>
+<li><code>-3</code>: inspect conflicting joints and connector
+directions</li>
+<li><code>-5</code>: re-pick broken references</li>
+<li><code>-2</code>: remove redundant joints</li>
+<li><code>-1</code>: simplify the graph, check offsets, and report a
+minimal case</li>
+</ul>
+<h2 id="restore-does-not-recover-the-exact-window-layout">Restore does
+not recover the exact window layout</h2>
+<p>Qt window-state serialization depends on available docks and
+workbenches. Manually restore remaining panels through <strong>View →
+Panels</strong> and toolbars through <strong>View → Toolbars</strong>,
+then report the FreeCAD build and before/after state.</p>
+<div class="pagebreak"></div>
+
+<h1 id="known-limitations">Known limitations</h1>
+<h2 id="not-an-implementation-clone">Not an implementation clone</h2>
+<p>The project reorganizes and extends FreeCAD workflows. It does not
+reproduce Autodesk’s kernels, cloud data model, T-spline environment,
+timeline engine, assembly solver, CAM system, or drawing
+implementation.</p>
+<h2 id="topological-naming">Topological naming</h2>
+<p>References to <code>FaceN</code>, <code>EdgeN</code>, and
+<code>VertexN</code> can break when upstream topology changes. FreeCAD’s
+element naming helps but cannot guarantee every reference survives a
+major feature rewrite. Projection, threads, dimensions, and joints may
+need repair.</p>
+<h2 id="independent-thread-dependency">Independent Thread
+dependency</h2>
+<p>The independent Thread is a custom
+<code>PartDesign::FeaturePython</code>. Its last saved shape can remain
+visible without the profile, but editing or recomputing it requires the
+runtime to be installed.</p>
+<h2 id="modeled-thread-cost">Modeled thread cost</h2>
+<p>Physical helical threads can greatly increase recomputation time,
+file size, boolean complexity, meshing time, and drawing HLR time. Use
+cosmetic threads unless physical flank geometry is required.</p>
+<h2 id="thread-standards">Thread standards</h2>
+<p>The independent cylindrical Thread intentionally omits standalone
+NPT-style tapered-face behavior. Use the native threaded Hole workflow
+for tapered internal threads supported by FreeCAD.</p>
+<h2 id="projection-boundaries">Projection boundaries</h2>
+<p>Direct cross-document Sketch external geometry is not supported.
+Cross-Body and imported geometry are mediated through SubShapeBinders
+when valid. Circular and future-history dependencies are rejected.</p>
+<h2 id="drawing-snapshots">Drawing snapshots</h2>
+<p>Active View Snapshot is a raster image by design. It cannot be
+converted automatically into an associative model view and is not a
+source for normal TechDraw dimensions.</p>
+<h2 id="drawing-dimensions">Drawing dimensions</h2>
+<p>The profile validates common selection mistakes but does not replace
+TechDraw’s dimension engine. Dimension semantics, HLR completion, and
+reference repair remain native FreeCAD behavior.</p>
+<h2 id="assembly-diagnostics">Assembly diagnostics</h2>
+<p>Preflight is advisory. Assembly compatibility depends on the complete
+nonlinear constraint graph, connector frames, offsets, grounding, and
+solver state. Geometrically similar parts are not guaranteed to solve
+under a chosen joint type.</p>
+<h2 id="assembly-document-links">Assembly document links</h2>
+<p>Cross-document components require saved files and stable source
+object identities. Moving, renaming, closing, or replacing source
+documents can break links.</p>
+<h2 id="ui-themes-and-platform-differences">UI themes and platform
+differences</h2>
+<p>Qt widget sizes, action registration timing, menu text, and icons
+vary across platforms and FreeCAD builds. The profile uses command IDs
+and compatibility fallbacks, but some visual differences are
+expected.</p>
+<h2 id="static-validation-boundary">Static validation boundary</h2>
+<p>Repository CI can compile and inspect the code without importing
+FreeCAD. It cannot exercise the live GUI, FreeCAD document model, Qt
+signal behavior, or Open CASCADE geometry operations.</p>
+<div class="pagebreak"></div>
+
+<h1 id="public-testing-guide">Public testing guide</h1>
+<h2 id="test-philosophy">Test philosophy</h2>
+<p>The repository supports three levels of validation:</p>
+<ol type="1">
+<li><strong>Static validation</strong> outside FreeCAD: syntax, embedded
+payload equality, internal method resolution, documentation links,
+release contents, and ZIP integrity.</li>
+<li><strong>Smoke testing</strong> inside FreeCAD: installation state
+and command registration without modifying a document.</li>
+<li><strong>Manual workflow testing</strong> inside FreeCAD: real GUI
+interactions and document recomputation.</li>
+</ol>
+<p>Static checks cannot prove GUI or Open CASCADE behavior. Public test
+reports are essential.</p>
+<h2 id="static-validation">Static validation</h2>
+<p>From the repository root:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> tools/validate_package.py <span class="at">--repo</span> .</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> tools/build_release.py <span class="at">--repo</span> . <span class="at">--check</span></span></code></pre></div>
+<p>The GitHub Actions workflow runs the same checks on pull
+requests.</p>
+<h2 id="freecad-smoke-test">FreeCAD smoke test</h2>
+<p>Install the profile, then execute:</p>
+<pre class="text"><code>macros/FusionLikeUI_SmokeTest_v1.3.0.FCMacro</code></pre>
+<p>Record its output from Report view.</p>
+<h2 id="manual-test-matrix">Manual test matrix</h2>
+<h3 id="installation-and-recovery">Installation and recovery</h3>
+<ul>
+<li><strong>I-01</strong> Fresh install into a clean FreeCAD user
+profile.</li>
+<li><strong>I-02</strong> Upgrade directly from v1.0, v1.1, and v1.2
+where available.</li>
+<li><strong>I-03</strong> Rebuild the profile twice; confirm no
+duplicate toolbars.</li>
+<li><strong>I-04</strong> Restore original interface, re-enable, then
+uninstall.</li>
+<li><strong>I-05</strong> Restart FreeCAD and confirm automatic
+startup.</li>
+</ul>
+<h3 id="sketch-context">Sketch context</h3>
+<ul>
+<li><strong>S-01</strong> Enter Sketch from Part Design; confirm
+contextual ribbon appears.</li>
+<li><strong>S-02</strong> Leave Sketch; confirm Design ribbon
+returns.</li>
+<li><strong>S-03</strong> Test line, rectangle, circle, arc, slot, trim,
+offset, dimension, and construction commands.</li>
+<li><strong>S-04</strong> Open Sketch immediately after workbench
+activation; confirm delayed command registration triggers a
+rebuild.</li>
+</ul>
+<h3 id="projection">Projection</h3>
+<ul>
+<li><strong>P-01</strong> Project a same-Body earlier edge and
+Pad/Pocket the result.</li>
+<li><strong>P-02</strong> Project an entire planar face boundary.</li>
+<li><strong>P-03</strong> Project a whole earlier Sketch.</li>
+<li><strong>P-04</strong> Project imported STEP geometry through a
+binder.</li>
+<li><strong>P-05</strong> Project across Bodies.</li>
+<li><strong>P-06</strong> Confirm later-feature and circular-reference
+attempts are rejected.</li>
+<li><strong>P-07</strong> Change the source dimensions and confirm
+linked projection updates.</li>
+</ul>
+<h3 id="hole-and-thread-1">Hole and Thread</h3>
+<ul>
+<li><strong>H-01</strong> Native plain, counterbore, and countersink
+holes.</li>
+<li><strong>H-02</strong> Cosmetic and modeled ISO metric threads.</li>
+<li><strong>H-03</strong> Left-hand and partial-depth thread.</li>
+<li><strong>T-01</strong> External independent thread on a
+cylinder.</li>
+<li><strong>T-02</strong> Internal independent thread where supported by
+selected face geometry.</li>
+<li><strong>T-03</strong> Edit an existing independent Thread with
+Shift+T.</li>
+<li><strong>T-04</strong> Save, close, reopen, and recompute.</li>
+</ul>
+<h3 id="drawing">Drawing</h3>
+<ul>
+<li><strong>D-01</strong> Insert Model View from a Body and add
+projected views.</li>
+<li><strong>D-02</strong> Dimension visible linear, circular, and
+angular geometry.</li>
+<li><strong>D-03</strong> Confirm Active View Snapshot is identified as
+raster.</li>
+<li><strong>D-04</strong> Insert an Assembly as a source.</li>
+<li><strong>D-05</strong> Create section/detail views and hatching.</li>
+<li><strong>D-06</strong> Create a thread callout.</li>
+<li><strong>D-07</strong> Export PDF, SVG, and DXF.</li>
+</ul>
+<h3 id="assembly">Assembly</h3>
+<ul>
+<li><strong>A-01</strong> Add Selected from same document.</li>
+<li><strong>A-02</strong> Add a component from a saved external
+document.</li>
+<li><strong>A-03</strong> Copy, paste with offset, paste in place, and
+duplicate.</li>
+<li><strong>A-04</strong> Ground a component and create
+fixed/revolute/cylindrical/slider/ball joints.</li>
+<li><strong>A-05</strong> Deliberately select two connectors from the
+same component; verify diagnostic.</li>
+<li><strong>A-06</strong> Deliberately create a redundant or conflicting
+joint; verify decoded result.</li>
+<li><strong>A-07</strong> Test broken linked subelements after changing
+source topology.</li>
+<li><strong>A-08</strong> Create exploded view, BOM, and simulation
+where applicable.</li>
+</ul>
+<h2 id="recommended-test-environments">Recommended test
+environments</h2>
+<p>Report the exact environment rather than assuming equivalence:</p>
+<ul>
+<li>FreeCAD version and build hash</li>
+<li>Windows, macOS, or Linux distribution</li>
+<li>Qt/PySide generation if known</li>
+<li>Open CASCADE version if shown by About FreeCAD</li>
+<li>graphics backend/driver for display-specific failures</li>
+</ul>
+<h2 id="bug-report-minimum">Bug report minimum</h2>
+<p>A useful report includes:</p>
+<ol type="1">
+<li>test ID or exact workflow</li>
+<li>minimal <code>.FCStd</code> file when shareable</li>
+<li>starting selection and active workbench</li>
+<li>expected result</li>
+<li>actual result</li>
+<li>all <code>[Fusion-like UI]</code> messages and traceback</li>
+<li>whether the problem persists after restart and profile rebuild</li>
+</ol>
+<p>Remove confidential geometry before uploading a document.</p>
+</body>
+</html>

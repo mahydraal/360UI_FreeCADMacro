@@ -1,0 +1,85 @@
+# -*- coding: utf-8 -*-
+"""Non-destructive installation and command-availability check for v1.3.0."""
+
+import importlib
+import os
+import sys
+import traceback
+
+import FreeCAD as App
+import FreeCADGui as Gui
+from PySide import QtGui
+
+try:
+    from PySide import QtWidgets
+except ImportError:
+    QtWidgets = QtGui
+
+ADDON_DIR = os.path.join(App.getUserAppDataDir(), "Mod", "FusionLikeUI")
+EXPECTED_VERSION = "1.3.0"
+
+
+def run_check():
+    if ADDON_DIR not in sys.path:
+        sys.path.insert(0, ADDON_DIR)
+    runtime = importlib.import_module("fusion_like_ui_runtime")
+    lines = []
+    lines.append("Installed runtime version: {}".format(getattr(runtime, "PROFILE_VERSION", "unknown")))
+    lines.append("Expected version: {}".format(EXPECTED_VERSION))
+    lines.append("")
+
+    required_methods = (
+        "_build_sketch_toolbars",
+        "_refresh_ui_context_if_needed",
+        "insert_dimensionable_model_view",
+        "copy_assembly_components",
+        "paste_assembly_components",
+        "add_selected_to_assembly",
+        "show_assembly_mate_diagnostics",
+        "_post_joint_accept_diagnostics",
+        "solve_assembly_with_diagnostics",
+    )
+    missing_methods = [
+        name for name in required_methods if not hasattr(runtime.FusionProfile, name)
+    ]
+    lines.append("Runtime methods: {}".format("OK" if not missing_methods else "MISSING " + ", ".join(missing_methods)))
+
+    mw = Gui.getMainWindow()
+    command_ids = (
+        "Sketcher_CompLine",
+        "Sketcher_CompCreateRectangles",
+        "Sketcher_CompCreateArc",
+        "TechDraw_View",
+        "TechDraw_ActiveView",
+        "Assembly_Insert",
+        "Assembly_SolveAssembly",
+    )
+    missing_actions = []
+    for command_id in command_ids:
+        action = mw.findChild(getattr(QtGui, "QAction", QtWidgets.QAction), command_id)
+        if action is None:
+            missing_actions.append(command_id)
+    lines.append(
+        "Currently registered command actions: {}".format(
+            "OK" if not missing_actions else "not loaded yet: " + ", ".join(missing_actions)
+        )
+    )
+    lines.append("")
+    lines.append("Note: workbench-specific actions may appear only after that workbench has been activated once.")
+    lines.append("This test did not create or modify a document.")
+
+    text = "\n".join(lines)
+    App.Console.PrintMessage("[Fusion-like UI smoke test]\n{}\n".format(text))
+    QtWidgets.QMessageBox.information(Gui.getMainWindow(), "Fusion-like v1.3 smoke test", text)
+
+
+try:
+    run_check()
+except Exception:
+    details = traceback.format_exc()
+    App.Console.PrintError("[Fusion-like UI smoke test] Failed:\n{}\n".format(details))
+    QtWidgets.QMessageBox.critical(
+        Gui.getMainWindow(),
+        "Fusion-like smoke test failed",
+        "The check failed. Details were written to Report view.\n\n{}".format(details),
+    )
